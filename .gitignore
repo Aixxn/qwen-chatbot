@@ -32,6 +32,9 @@ dist/
 # Local RAG/vector storage
 storage/
 
+# Local agent planning/spec artifacts
+docs/superpowers/
+
 # Runtime logs and temporary files
 *.log
 logs/

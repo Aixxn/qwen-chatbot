@@ -5,6 +5,7 @@ for online retail businesses. The app runs locally with Ollama, indexes store
 support documents into LanceDB, and presents a customer-facing chat interface
 for questions about returns, shipping, warranties, product troubleshooting, and
 store policies.
+<img width="1280" height="842" alt="customer-chat-desktop" src="https://github.com/user-attachments/assets/bfd4cdcb-9799-4763-9afb-463d93db5fab" />
 
 ## Features
 

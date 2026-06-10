@@ -1,0 +1,30 @@
+[project]
+name = "customer-service-chatbot"
+version = "0.1.0"
+description = "Local Ollama customer-service chatbot with RAG"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.115.0,<0.116.0",
+    "uvicorn[standard]>=0.34.0,<0.35.0",
+    "ollama>=0.6.1",
+    "markitdown[all]>=0.1.0",
+    "pydantic-ai>=0.1.0",
+    "lancedb>=0.26.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.8.0",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP", "B", "SIM"]
+ignore = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["core"]

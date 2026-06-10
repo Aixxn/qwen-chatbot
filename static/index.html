@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Store Support Assistant</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="support-shell">
+      <section class="chat-card" aria-label="Store support chat">
+        <header class="chat-header">
+          <div class="brand-mark" aria-hidden="true">S</div>
+          <div class="brand-copy">
+            <p class="eyebrow">Online Store Support</p>
+            <h1>Customer Service Assistant</h1>
+          </div>
+          <div id="status-pill" class="status-pill">Preparing</div>
+        </header>
+
+        <div id="messages" class="messages" aria-live="polite"></div>
+
+        <div id="search-status" class="search-status" hidden></div>
+
+        <form id="chat-form" class="composer">
+          <input
+            id="chat-input"
+            type="text"
+            placeholder="Ask about returns, shipping, warranty, or product help"
+            autocomplete="off"
+            disabled
+          />
+          <button id="send-button" type="submit" disabled>Send</button>
+        </form>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

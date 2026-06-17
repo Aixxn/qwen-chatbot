@@ -52,12 +52,20 @@ chatForm.addEventListener("submit", async (event) => {
   showSearchStatus("Checking store support documents...");
 
   try {
-    const data = await postJson("/api/chat", {
+    const data = await postStream("/api/chat/stream", {
       message,
       history,
+    }, ({ type, payload }) => {
+      if (type === "search") {
+        showSearchStatus(`Checking: ${payload.query}`);
+      }
+
+      if (type === "text") {
+        assistantMessage.textContent += payload;
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
     });
 
-    assistantMessage.textContent = data.answer;
     if (data.searches && data.searches.length) {
       showSearchStatus(`Sources checked: ${data.searches.join("; ")}`);
     } else {
@@ -154,6 +162,73 @@ function hideSearchStatus() {
 async function getJson(url) {
   const response = await fetch(url);
   return readJsonResponse(response);
+}
+
+async function postStream(url, body, onEvent) {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    return readJsonResponse(response);
+  }
+
+  if (!response.body) {
+    throw new Error("Streaming is not supported by this browser.");
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  const searches = [];
+  let answer = "";
+  let buffer = "";
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) {
+      break;
+    }
+
+    buffer += decoder.decode(value, { stream: true });
+    const events = buffer.split("\n\n");
+    buffer = events.pop() || "";
+
+    for (const eventText of events) {
+      const event = parseStreamEvent(eventText);
+      if (!event) {
+        continue;
+      }
+
+      if (event.type === "error") {
+        throw new Error(event.payload || "Stream failed");
+      }
+
+      if (event.type === "search" && event.payload.query) {
+        searches.push(event.payload.query);
+      }
+
+      if (event.type === "text") {
+        answer += event.payload;
+      }
+
+      onEvent(event);
+    }
+  }
+
+  return { answer, searches };
+}
+
+function parseStreamEvent(eventText) {
+  const dataLine = eventText
+    .split("\n")
+    .find((line) => line.startsWith("data: "));
+  if (!dataLine) {
+    return null;
+  }
+
+  return JSON.parse(dataLine.slice("data: ".length));
 }
 
 async function postJson(url, body) {

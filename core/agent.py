@@ -93,7 +93,7 @@ class CustomerServiceAgent:
             """Search relevant customer-service document sections."""
             self.search_log.append(query)
             query_embedding = embedding_func.compute_query_embeddings(query)[0]
-            results = ctx.deps.vector_store.search(query_embedding).limit(10).to_list()
+            results = ctx.deps.vector_store.search(query_embedding).limit(3).to_list()
 
             if not results:
                 return "No relevant documents found."
